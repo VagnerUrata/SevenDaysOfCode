@@ -2,6 +2,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +10,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SevenDays {
+
+    public static record Movie (String title, String url, String imDbRating, String year) {}
     public static void main(String[] args) throws Exception {
 
         String apiKey = "<APIKEY>";
@@ -30,8 +33,24 @@ public class SevenDays {
 
     }
 
+    private static List<Movie> parse(String json) {
+        String[] moviesArray = parseJsonMovies(json);
+
+        List<String> titles = parseTitles(moviesArray);
+        List<String> urlImages = parseUrlImages(moviesArray);
+        List<String> ratings = parseRatings(moviesArray);
+        List<String> years = parseYears(moviesArray);
+
+        List<Movie> movies = new ArrayList<>(titles.size());
+
+        for (int i =0; i < titles.size(); i++) {
+            movies.add(new Movie(titles.get(i), urlImages.get(i) , ratings.get(i), years.get(i)));
+        }
+        return movies;
+    }
+
     private static List<String> parseUrlImages(String[] moviesArray) {
-        return parseAttribute(moviesArray, 3);
+        return parseAttribute(moviesArray, 5);
     }
 
     private static List<String> parseTitles(String[] moviesArray) {
@@ -59,5 +78,13 @@ public class SevenDays {
                 .map(e -> e.split(":\"")[1])
                 .map(e -> e.replaceAll("\"", ""))
                 .collect(Collectors.toList());
+    }
+
+    private static List<String> parseYears(String[] moviesArray) {
+        return parseAttribute(moviesArray, 4);
+    }
+
+    private static List<String> parseRatings(String[] moviesArray) {
+        return parseAttribute(moviesArray, 7);
     }
 }
