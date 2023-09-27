@@ -1,3 +1,4 @@
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -10,9 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SevenDays {
-
-    public static record Movie(String title, String url, String imDbRating, String year) {
-    }
 
     public static void main(String[] args) throws Exception {
 
@@ -27,9 +25,9 @@ public class SevenDays {
 
         List<Movie> movies = parse(json);
 
-        System.out.println(movies.size());
-        System.out.println(movies.get(0));
-
+        PrintWriter writer = new PrintWriter("content.html");
+        new HtmlGenerator(writer).generate(movies);
+        writer.close();
     }
 
     private static List<Movie> parse(String json) {
@@ -47,6 +45,8 @@ public class SevenDays {
         }
         return movies;
     }
+
+
 
     private static List<String> parseUrlImages(String[] moviesArray) {
         return parseAttribute(moviesArray, 5);
