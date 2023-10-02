@@ -4,6 +4,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,11 +21,14 @@ public class SevenDays {
         String json = new ImdbApiClient(apiKey).getBody();
 
         System.out.println("Parsing do Json");
-        List<Movie> movies  = new ImdbMovieJsonParser(json).parse();
+        JsonParser jsonParser = new ImdbMovieJsonParser(json);
+        List<? extends Content> contentList = new ImdbMovieJsonParser(json).parse();
+
+        Collections.sort(contentList, Comparator.comparing(Content::year));
 
         System.out.println("gerando Html");
         PrintWriter writer = new PrintWriter("content.html");
-        new HtmlGenerator(writer).generate(movies);
+        new HtmlGenerator(writer).generate(contentList);
         writer.close();
     }
 }

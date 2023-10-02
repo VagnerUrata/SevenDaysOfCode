@@ -1,8 +1,8 @@
 import java.io.PrintWriter;
 import java.util.List;
 
-record Movie(String title, String urlImage, String rating, String year) implements Content {
-}
+//record Movie(String title, String urlImage, String rating, String year) implements Content {
+//}
 
 public class HtmlGenerator {
     private final PrintWriter writer;
