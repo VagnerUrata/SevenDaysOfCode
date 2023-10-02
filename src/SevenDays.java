@@ -18,15 +18,20 @@ public class SevenDays {
 
         System.out.println("Chamando API");
         String apiKey = "<APIKEY>";
-        String json = new ImdbApiClient(apiKey).getBody();
+//        String json = new ImdbApiClient(apiKey).getBody();
+        String privateKey = "<PRIVATEKEY>";
+        MarvelApiClient apiClient = new MarvelApiClient(apiKey, privateKey);
+        String json = apiClient.getBody();
 
         System.out.println("Parsing do Json");
-        JsonParser jsonParser = new ImdbMovieJsonParser(json);
-        List<? extends Content> contentList = new ImdbMovieJsonParser(json).parse();
+//        JsonParser jsonParser = new ImdbMovieJsonParser(json);
+//        List<? extends Content> contentList = new ImdbMovieJsonParser(json).parse();
+        JsonParser jsonParser = new MarvelSerieJsonParser(json);
+        List<? extends Content> contentList = jsonParser.parse();
 
         Collections.sort(contentList, Comparator.comparing(Content::year));
 
-        System.out.println("gerando Html");
+        System.out.println("Gerando Html");
         PrintWriter writer = new PrintWriter("content.html");
         new HtmlGenerator(writer).generate(contentList);
         writer.close();
